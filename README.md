@@ -1,10 +1,12 @@
 # Search Strategies
 
-> Author: Satwik Srivastava (^__^)
+> Author: Satwik Srivastava 
 
-**Profiles:**<br>
-    - LinkedIn : https://www.linkedin.com/in/satwiksrivastava/
-    - twitter  : @Satwik_9
-    - github   : https://github.com/Satwik-S9
+**Profiles:** 
 
-**Description:** In this script I write down all the basic search strategies employed in Artificial Intelligence 
+* LinkedIn : https://www.linkedin.com/in/satwiksrivastava/
+* Twitter  : [@Satwik_9](https://twitter.com/Satwik_9)
+* Github   : https://github.com/Satwik-S9
+
+**Description:** <br>
+In this script I write down all the basic search strategies employed in Artificial Intelligence 
