@@ -5,7 +5,8 @@ Profiles >>==>
     twitter  : @Satwik_9
     github   : https://github.com/Satwik-S9
 
-Description: In this script I write down all the basic search strategies employed in Artificial Intelligence  
+Description: In this script I write down all the basic search strategies employed in Artificial Intelligence 
+! private: git remote search 
 """
 
 
