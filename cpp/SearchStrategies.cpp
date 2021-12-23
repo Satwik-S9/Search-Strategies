@@ -11,7 +11,7 @@ void zip()
 
 }
 
-class Graph
+struct Graph
 {
     int num_nodes; 
     std::vector<std::vector<int>> edges;
@@ -20,7 +20,6 @@ class Graph
     std::vector<std::vector<int>> data;
     std::vector<std::vector<int>> weights;
 
-public:
     Graph(int num_nodes, std::vector<std::vector<int>> edges, bool directed=false, bool weighted=false)
     {
         this->num_nodes = num_nodes;
@@ -59,13 +58,26 @@ public:
         }
     }
 
-    void represent()
-    {
-        
-    }
+    // void represent()
+    // {
+    //     std::string result = "";
+    //     if (this->weighted)
+    //     {
+
+    //     }
+    // }
 };
 
 int main()
 {
+    int num_nodes1 = 5;
+    std::vector<std::vector<int>> edges1 = {{0, 1}, {0, 4}, {1, 2}, {1, 3}, {1, 4}, {2, 3}, {3, 4}};
+
+    Graph g1(num_nodes1, edges1);
+    
+    for (int i=0; i<g1.weights.size(); i++)
+        for (int j=0; j<g1.weights[i].size(); j++)
+            std::cout << i << " : " << g1.weights[i][j] << std::endl;
+    
     return 0;
 }
