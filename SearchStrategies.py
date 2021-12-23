@@ -12,7 +12,7 @@ Description: In this script I write down all the basic search strategies employe
 
 
 #* Global Version container
-__version__ = "0.38"
+__version__ = "0.4"
 
 
 #* === TREE DATA-STRUCTURE === *#
@@ -73,21 +73,21 @@ def create_tree(tree_tuple: tuple, weight_tuple: tuple = None):
     # self.root = TreeNode()
     if weight_tuple is None:
         if isinstance(tree_tuple, tuple) and len(tree_tuple) == 3:
-            root = TreeNode(tree_tuple[1], 1)
+            root = TreeNode(value=tree_tuple[1], weight=1)
             root.left = create_tree(tree_tuple[0])
             root.right = create_tree(tree_tuple[2])
             
         else:
-            root = TreeNode(tree_tuple)
+            root = TreeNode(value=tree_tuple, weight=1)
 
     elif weight_tuple is not None:
         if isinstance(tree_tuple, tuple) and len(tree_tuple) == 3:
-            root = TreeNode(tree_tuple[1], weight_tuple[1])
+            root = TreeNode(value=tree_tuple[1], weight=weight_tuple[1])
             root.left = create_tree(tree_tuple[0], weight_tuple[0])
             root.right = create_tree(tree_tuple[2], weight_tuple[2])
         
         else:
-            root = TreeNode(tree_tuple)
+            root = TreeNode(value=tree_tuple, weight=1)
             
     else:
         root = TreeNode(tree_tuple)
@@ -165,7 +165,7 @@ class BFS:
 
     def traverse(self, verbose=False):
         if self.type == 'graph':
-            assert type(self.struct) == Graph
+            assert isinstance(self.struct, Graph)
 
             queue = []  # maintain a queue of visited nodes
             # Array to keep track whether node is discovered
@@ -197,7 +197,7 @@ class BFS:
                 return queue, distance, parent
 
         if self.type == 'tree':
-            assert type(self.struct) == TreeNode
+            assert isinstance(self.struct, TreeNode)
 
             # Base case
             if self.struct is None:
@@ -205,49 +205,102 @@ class BFS:
 
             # creating an empty queue for level order traversal
             queue = []
+            container = []
             queue.append(self.struct)
 
             while len(queue) > 0:
-                print(queue[0].value)
-                node = queue.pop(0)
+                if queue[0] is not None:
+                    if verbose:
+                        print(queue[0].value, end=" ")
+                    container.append(queue[0])
+                    node = queue.pop(0)
 
                 if node.left is not None:
                     queue.append(node.left)
+                    node.left.parent = node
 
                 if node.right is not None:
                     queue.append(node.right)
+                    node.right.parent = node
+            
+            return container
 
     def find_shortest_path(self, target, source=None):
         """Find the shortest path from source to target"""
-        if source is None:
-            source = self.root
+        if self.type == 'graph':
+            assert isinstance(self.struct, Graph)
+            if source is None:
+                source = self.root
 
-        visited = [False] * len(self.struct.data)
-        parent = [None] * len(self.struct.data)
-        distance = [float('inf')] * len(self.struct.data)
-        queue = []
+            visited = [False] * len(self.struct.data)
+            parent = [None] * len(self.struct.data)
+            distance = [float('inf')] * len(self.struct.data)
+            queue = []
 
-        distance[source] = 0
-        queue.append(source)
-        idx = 0
+            distance[source] = 0
+            queue.append(source)
+            idx = 0
 
-        while idx < len(queue) and not visited[target]:
-            # dequeing operation
-            current = queue[idx]
-            visited[current] = True
-            idx += 1
+            while idx < len(queue) and not visited[target]:
+                # dequeing operation
+                current = queue[idx]
+                visited[current] = True
+                idx += 1
 
-            #update distances
-            self.__update_distances(self.struct, current, distance, parent)
+                #update distances
+                self.__update_distances(self.struct, current, distance, parent)
 
-            # find the first unvisited node with the minimum distance
-            next_node = self.__pick_next_node(distance, visited)
-            if next_node:
-                queue.append(next_node)
+                # find the first unvisited node with the minimum distance
+                next_node = self.__pick_next_node(distance, visited)
+                if next_node:
+                    queue.append(next_node)
 
-            visited[current] = True
+                visited[current] = True
 
-        return distance[target], parent
+            return distance[target], parent
+        
+        if self.type == 'tree':
+            assert isinstance(self.struct, TreeNode)
+            if source is None:
+                source = self.struct
+            
+                        # Base case
+            if source is None:
+                return
+
+            # creating an empty queue for level order traversal
+            queue = []
+            container = []
+            path = []
+            cost = 0
+            queue.append(source)
+
+            while len(queue) > 0:
+                if queue[0] is not None:
+                    container.append(queue[0])
+                    node = queue.pop(0)
+                    
+                if node.value == target:
+                    break
+
+                if node.left is not None:
+                    queue.append(node.left)
+                    node.left.parent = node
+
+                if node.right is not None:
+                    queue.append(node.right)
+                    node.right.parent = node
+            
+            result = container[-1]
+            while result.parent is not None:
+                path.append(result.value)
+                cost += result.weight
+                result = result.parent
+            path.append(result.value)
+            cost += result.weight
+            
+            return path[::-1], cost
+            
 
     # graph shortest path helper methods
     def __update_distances(self, graph, current, distance, parent=None):
