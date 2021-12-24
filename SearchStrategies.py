@@ -11,8 +11,8 @@ Description: In this script I write down all the basic search strategies employe
 # todo: Complete the class, add 'BST' and 'nonBST' options
 
 
-#* Global Version container
-__version__ = "0.4"
+# * Global Version container
+__version__ = "0.45"
 
 
 #* === TREE DATA-STRUCTURE === *#
@@ -39,21 +39,23 @@ class TreeNode:
 #* ==== HELPER FUNCTIONS FOR THE CLASS ==== *#
 #  ----------------------------------------  #
 #! Needs to be checked
-def display_keys(node, space='\t', level=0):
-    """Display the Binary Tree"""
-    # if the node is empty
-    if node is None:
-        print(space*level + '∅')
-        return
 
-    #if the node is a leaf
-    if node.left is None and node.right is None:
-        print(space*level + str(node.value))
 
-    # if the node has children
-    display_keys(node.right, space, level+1)
-    print(space*level + str(node.value))
-    display_keys(node.left, space, level+1)
+# def display_keys(node, space='\t', level=0):
+#     """Display the Binary Tree"""
+#     # if the node is empty
+#     if node is None:
+#         print(space*level + '∅')
+#         return
+
+#     # if the node is a leaf
+#     if node.left is None and node.right is None:
+#         print(space*level + str(node.value))
+
+#     # if the node has children
+#     display_keys(node.right, space, level+1)
+#     print(space*level + str(node.value))
+#     display_keys(node.left, space, level+1)
 
 
 def height(node):
@@ -69,6 +71,7 @@ def size(node):
 
     return 1 + size(node.left) + size(node.right)
 
+
 def create_tree(tree_tuple: tuple, weight_tuple: tuple = None):
     # self.root = TreeNode()
     if weight_tuple is None:
@@ -76,7 +79,7 @@ def create_tree(tree_tuple: tuple, weight_tuple: tuple = None):
             root = TreeNode(value=tree_tuple[1], weight=1)
             root.left = create_tree(tree_tuple[0])
             root.right = create_tree(tree_tuple[2])
-            
+
         else:
             root = TreeNode(value=tree_tuple, weight=1)
 
@@ -85,14 +88,15 @@ def create_tree(tree_tuple: tuple, weight_tuple: tuple = None):
             root = TreeNode(value=tree_tuple[1], weight=weight_tuple[1])
             root.left = create_tree(tree_tuple[0], weight_tuple[0])
             root.right = create_tree(tree_tuple[2], weight_tuple[2])
-        
+
         else:
             root = TreeNode(value=tree_tuple, weight=1)
-            
+
     else:
         root = TreeNode(tree_tuple)
 
     return root
+
 
 def to_tuple(root):
     if root is None:
@@ -100,7 +104,6 @@ def to_tuple(root):
     if root.left is None and root.right is None:
         return root.value
     return TreeNode.to_tuple(root.left), root.value, TreeNode.to_tuple(root.right)
-
 
 
 #* === GRAPH DATA-STRUCTURE === *#
@@ -156,6 +159,10 @@ class Graph:
 #* === UNINFORMED SEARCH ALGORITHM === *#
 #  -----------------------------------  #
 class BFS:
+    """[BFS: Breadth First Search]
+
+    """
+
     def __init__(self, struct, root=None, type='graph'):
         self.root = root
         self.struct = struct
@@ -210,9 +217,8 @@ class BFS:
 
             while len(queue) > 0:
                 if queue[0] is not None:
-                    if verbose:
-                        print(queue[0].value, end=" ")
-                    container.append(queue[0])
+                    if queue[0].value is not None:
+                        container.append(queue[0].value)
                     node = queue.pop(0)
 
                 if node.left is not None:
@@ -222,7 +228,10 @@ class BFS:
                 if node.right is not None:
                     queue.append(node.right)
                     node.right.parent = node
-            
+
+            if verbose:
+                print(f"Order of Traversal: {container}")
+
             return container
 
     def find_shortest_path(self, target, source=None):
@@ -247,7 +256,7 @@ class BFS:
                 visited[current] = True
                 idx += 1
 
-                #update distances
+                # update distances
                 self.__update_distances(self.struct, current, distance, parent)
 
                 # find the first unvisited node with the minimum distance
@@ -258,13 +267,13 @@ class BFS:
                 visited[current] = True
 
             return distance[target], parent
-        
+
         if self.type == 'tree':
             assert isinstance(self.struct, TreeNode)
             if source is None:
                 source = self.struct
-            
-                        # Base case
+
+                # Base case
             if source is None:
                 return
 
@@ -279,7 +288,7 @@ class BFS:
                 if queue[0] is not None:
                     container.append(queue[0])
                     node = queue.pop(0)
-                    
+
                 if node.value == target:
                     break
 
@@ -290,7 +299,7 @@ class BFS:
                 if node.right is not None:
                     queue.append(node.right)
                     node.right.parent = node
-            
+
             result = container[-1]
             while result.parent is not None:
                 path.append(result.value)
@@ -298,11 +307,11 @@ class BFS:
                 result = result.parent
             path.append(result.value)
             cost += result.weight
-            
+
             return path[::-1], cost
-            
 
     # graph shortest path helper methods
+
     def __update_distances(self, graph, current, distance, parent=None):
         """Update the distances of the current node's neighbors"""
         neighbors = graph.data[current]
@@ -325,7 +334,66 @@ class BFS:
         return min_node
 
 
-#* Informed Search Algorithm
-class A_star:
+class DFS:
+    """[DFS: Depth First Search]
+    """
+
+    def __init__(self, struct, type, root=None):
+        self.root = root
+        self.struct = struct
+        self.type = type
+        if self.type == 'graph' and self.root is None:
+            raise ValueError('root argument requiured')
+
+    def traverse(self, verbose=False):
+        if self.type == 'tree':
+            assert isinstance(self.struct, TreeNode)
+            
+            if self.struct is None:
+                return
+            
+            container = self.__preorder(self.struct, [])
+            
+            if verbose:
+                print(f"The Order of Traversal is: {container}")
+            
+            return container
+                
+        if self.type == 'graph':
+            assert isinstance(self.struct, Graph)
+
+            s = []
+            s.append(self.root)
+            discovered = [False] * len(self.struct.data)
+            container = []
+            while len(s) > 0:
+                v = s.pop()
+                if not discovered[v]:
+                    discovered[v] = True
+                    container.append(v)
+                    for w in self.struct.data[v][::-1]:
+                        if not discovered[w]:
+                            s.append(w)
+
+            if verbose:
+                print(f"Order of Traversal is: {container}")
+
+            return container
+        
+    def __preorder(self, tree_root: TreeNode, container: list):
+        if tree_root:
+            if tree_root.value is not None:
+                container.append(tree_root.value)
+            self.__preorder(tree_root.left, container)
+            self.__preorder(tree_root.right, container)
+        
+        return container
+        
+        
+
+
+#* === INFORMED SEARCH ALGORITHM === *#
+#  -----------------------------------  #
+class AStar:
     def __init__(self, heuristic=None):
-        pass
+        pass 
