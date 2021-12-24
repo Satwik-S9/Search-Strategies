@@ -95,9 +95,9 @@ The Tree Data Structure is a fundamental datastructure for proper and efficient 
 
 ### 5.1.1 Binary Tree
 
-![Binary Tree](https://upload.wikimedia.org/wikipedia/commons/f/f7/Binary_tree.svg)
+![Binary Tree](https://www.geeksforgeeks.org/wp-content/uploads/binary-tree-to-DLL.png)
 <br>
-Source: [Wikipedia](https://en.wikipedia.org/wiki/Binary_tree)
+Source: [GeeksForGeeks](https://www.geeksforgeeks.org/binary-tree-data-structure/)
 <br>
 A binary tree is a data-structure that in which each node has atmost two children. It can be represented as [`tuple`]() (L, S, R)
  The binary tree can be created using this module as follows:
