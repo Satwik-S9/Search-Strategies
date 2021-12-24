@@ -388,8 +388,6 @@ class DFS:
             self.__preorder(tree_root.right, container)
         
         return container
-        
-        
 
 
 #* === INFORMED SEARCH ALGORITHM === *#
