@@ -62,7 +62,7 @@ All These algorithms are implemented on the tree and the graph data-structures a
 
 !NOTE! : Currently I have not packaged this as a module so you have to clone it directly into your working directory.
 
-Just [`clone`](#search-strategies) or [`download`](#search-strategies) the _`SearchStrategies.py`_ file and import it as shown below.
+Just [`clone`](#search-strategies) or [`download`](https://github.com/Satwik-S9/Search-Strategies/archive/refs/heads/master.zip) the _`SearchStrategies.py`_ file and import it as shown below.
 
 ```python
 import SearchStrategies as ss
