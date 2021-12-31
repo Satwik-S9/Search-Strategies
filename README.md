@@ -12,7 +12,7 @@
 
 <br/>
 
-#### **<u>Version</u>:** `0.45`
+#### **<u>Version</u>:** `0.49`
 
 <br/>
 
@@ -22,9 +22,9 @@ These include but are not limited to the following:
 
 ## 1. Table Of Contents
 
-- [Search Strategies](#search-strategies)<br>
+- [Search Strategies](#search-strategies)
       - [**<u>Release</u>:** `alpha`](#ureleaseu-alpha)
-      - [**<u>Version</u>:** `0.45`](#uversionu-045)
+      - [**<u>Version</u>:** `0.49`](#uversionu-049)
   - [1. Table Of Contents](#1-table-of-contents)
   - [2. Introduction](#2-introduction)
     - [2.1 Uninformed Search](#21-uninformed-search)
@@ -32,12 +32,13 @@ These include but are not limited to the following:
     - [2.3 Game Search](#23-game-search)
   - [3. Installation and Usage](#3-installation-and-usage)
   - [4. ChangeLog](#4-changelog)
-    - [4.1 Version 0.45](#41-version-045)
-    - [4.2 Version 0.40](#42-version-040)
-    - [4.3 Version 0.38](#43-version-038)
-  - [5. Documentation](#5-documentation)
-    - [5.1 Tree](#51-tree)
-      - [**5.1.1 Binary Tree**](#511-binary-tree)
+    - [4.1 Version 0.49](#41-version-049)
+    - [4.2 Version 0.45](#42-version-045)
+    - [4.3 Version 0.40](#43-version-040)
+    - [4.4 Version 0.38](#44-version-038)
+- [5. Documentation](#5-documentation)
+  - [5.1 Tree](#51-tree)
+    - [5.1.1 Binary Tree](#511-binary-tree)
 
 ## 2. Introduction
 
@@ -72,18 +73,24 @@ This should print the current [version](#uversionu-040) of the module. If not it
 
 ## 4. ChangeLog
 
-### 4.1 Version 0.45
+### 4.1 Version 0.49
+
+- Added `create_adjacency_list` for trees to convert them into graphs for interoperability.
+- Creating a tree can now initialize the keys and the parents (uses `initialize_parents` and `initialize_keys`)
+- The `DFS` class now supports the shortest path calculation for trees.
+
+### 4.2 Version 0.45
 
 - Changed the verbose functionality across `BFS` class to introduce more homogeniety between outputs.
 - `DFS` Class has been added to the module with the `traverse()` method for both _`trees`_ and _`graphs`_.
 - NOTE: The traverse method for tree currently does preorder traversal.
 - Fixed some bugs in the implementation of `BFS`.
 
-### 4.2 Version 0.40
+### 4.3 Version 0.40
 
- - The `BFS` Class has been added into the module along with relevant supporting data-structures such as `Graph` and `Tree`. This class supports methods for traversal of the data structure and to find the shortest path given a source and a target.
+- The `BFS` Class has been added into the module along with relevant supporting data-structures such as `Graph` and `Tree`. This class supports methods for traversal of the data structure and to find the shortest path given a source and a target.
 
-### 4.3 Version 0.38
+### 4.4 Version 0.38
 
 - Added Basic Data Structures such as `Tree` and `Graphs` and added traversal Methods for the same to the `BFS` Class.
 
@@ -100,7 +107,7 @@ The Tree Data Structure is a fundamental datastructure for proper and efficient 
 Source: [GeeksForGeeks](https://www.geeksforgeeks.org/binary-tree-data-structure/)
 <br>
 A binary tree is a data-structure that in which each node has atmost two children. It can be represented as [`tuple`]() (L, S, R)
- The binary tree can be created using this module as follows:
+The binary tree can be created using this module as follows:
 
 ```python
 import SearchStrategies as ss
@@ -110,4 +117,5 @@ tree_tuple = ((1, 3, None), 2, ((None, 3, 4), 5, (6, 7, 8)))
 
 root = ss.create_tree(tree_tuple)
 ```
+
 **NOTE:** Currently Working on Documentation. Please refer to the `test.ipynb` for an onhande demo.
