@@ -4,12 +4,14 @@
 #include <algorithm>
 #include <iterator>
 
-// zip function as inbuilt in python
-template <typename T, typename P>
-void zip()
+template<typename T>
+struct TreeNode
 {
-
-}
+    T value;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode *parent;
+};
 
 struct Graph
 {
