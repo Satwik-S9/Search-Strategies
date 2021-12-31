@@ -6,13 +6,14 @@ Profiles ->
     twitter  : @Satwik_9
     github   : https://github.com/Satwik-S9
 
-Description: In this script I write down all the basic search strategies employed in Artificial Intelligence 
+Description: In this script I write down all the basic search strategies employed in Artificial Intelligence. 
+To be made into a package later.  
 """
 # todo: Complete the class, add 'BST' and 'nonBST' options
 
 
 # * Global Version container
-__version__ = "0.45"
+__version__ = "0.49"
 
 
 #* === TREE DATA-STRUCTURE === *#
@@ -23,18 +24,20 @@ class TreeNode:
         - Inherited by the Tree class
     """
 
-    def __init__(self, value=None, weight=None):
+    def __init__(self, value=None, weight=None, key=None):
         self.value = value
         self.weight = weight
+        self.key = key
         self.left = None
         self.right = None
         self.parent = None
 
     def __repr__(self):
-        return f"\x1B[3m<TreeNode({self.value}, {self.weight}), Parent: {self.parent}>\x1B[0m"
+        return f"\x1B[3m<TreeNode(Key:{self.key}, Value: {self.value}, Weight: {self.weight}), Parent: {self.parent}>\x1B[0m"
 
     def __str__(self):
         return repr(self)
+        
 
 #* ==== HELPER FUNCTIONS FOR THE CLASS ==== *#
 #  ----------------------------------------  #
@@ -59,26 +62,36 @@ class TreeNode:
 
 
 def height(node):
-    if node is None:
+    if node is None or node.value is None:
         return 0
 
     return 1 + max(height(node.left), height(node.right))
 
 
 def size(node):
-    if node is None:
+    if node is None or node.value is None:
         return 0
 
     return 1 + size(node.left) + size(node.right)
 
 
-def create_tree(tree_tuple: tuple, weight_tuple: tuple = None):
+def find(root, target):
+    if root is not None:
+        if root.value == target:
+            return root
+        elif root.value < target:
+            find(root.right, target)
+        else:
+            find(root.left, target)
+        
+
+def create_prelim_tree(tree_tuple: tuple, weight_tuple: tuple = None):
     # self.root = TreeNode()
     if weight_tuple is None:
         if isinstance(tree_tuple, tuple) and len(tree_tuple) == 3:
             root = TreeNode(value=tree_tuple[1], weight=1)
-            root.left = create_tree(tree_tuple[0])
-            root.right = create_tree(tree_tuple[2])
+            root.left = create_prelim_tree(tree_tuple[0])
+            root.right = create_prelim_tree(tree_tuple[2])
 
         else:
             root = TreeNode(value=tree_tuple, weight=1)
@@ -86,8 +99,8 @@ def create_tree(tree_tuple: tuple, weight_tuple: tuple = None):
     elif weight_tuple is not None:
         if isinstance(tree_tuple, tuple) and len(tree_tuple) == 3:
             root = TreeNode(value=tree_tuple[1], weight=weight_tuple[1])
-            root.left = create_tree(tree_tuple[0], weight_tuple[0])
-            root.right = create_tree(tree_tuple[2], weight_tuple[2])
+            root.left = create_prelim_tree(tree_tuple[0], weight_tuple[0])
+            root.right = create_prelim_tree(tree_tuple[2], weight_tuple[2])
 
         else:
             root = TreeNode(value=tree_tuple, weight=1)
@@ -98,12 +111,171 @@ def create_tree(tree_tuple: tuple, weight_tuple: tuple = None):
     return root
 
 
+def create_tree(tree_tuple: tuple, weight_tuple: tuple = None):
+    root = create_prelim_tree(tree_tuple, weight_tuple)
+    root = initialize_parents(root)
+    root = initialize_keys(root)
+    
+    return root
+
+
 def to_tuple(root):
     if root is None:
         return None
     if root.left is None and root.right is None:
         return root.value
     return TreeNode.to_tuple(root.left), root.value, TreeNode.to_tuple(root.right)
+
+
+def initialize_parents(root):
+    # Base case
+    if root is None:
+        return
+
+    # creating an empty queue for level order traversal
+    queue = []
+    queue.append(root)
+
+    while len(queue) > 0:
+        if queue[0] is not None:
+            node = queue.pop(0)
+
+        if node.left is not None:
+            queue.append(node.left)
+            node.left.parent = node
+
+        if node.right is not None:
+            queue.append(node.right)
+            node.right.parent = node
+
+    return root
+
+def initialize_keys(root):
+    # Base case
+    if root is None:
+        return
+
+    # creating an empty queue for level order traversal
+    queue = []
+    container = []
+    queue.append(root)
+
+    while len(queue) > 0:
+        if queue[0] is not None:
+            if queue[0].value is not None:
+                container.append(queue[0])
+            node = queue.pop(0)
+
+        if node.left is not None:
+            queue.append(node.left)
+
+        if node.right is not None:
+            queue.append(node.right)
+
+    for idx, node in enumerate(container):
+        node.key = idx
+        
+    return container[0]
+
+def create_adjacency_list(root: TreeNode or tuple, weight_tuple: tuple = None, adj_list={}, idx=0, replace_keys=True):
+    """[summary]
+    Creates an Adjacency list from the given tree. Uses (level, node value) as keys.
+
+    Args:
+        root (TreeNode or tuple): [description]
+        weight_tuple (tuple, optional): [description]. Defaults to None.
+        adj_list (dict, optional): [description]. Defaults to {}.
+        idx (int, optional): [description]. Defaults to 0.
+        replace_keys
+
+    Raises:
+        TypeError: If the list is not a dictionary. Raises 'Adjacency list is not a dictionary'.
+        
+    Returns:
+        Dictionary: Returns a Python Dictionary containing (level, node) as key and [(childs, weights)] as values
+    """
+    # error handling
+    if not isinstance(adj_list, dict):
+        raise TypeError("Adjacency list is not a dictionary")
+
+    if replace_keys:
+        if isinstance(root, TreeNode):
+            # Base Cases
+            if root.left is None and root.right is None:
+                if root.value is not None and root.parent is not None:
+                    adj_list[(idx, root.value)] = [(root.parent.value, root.weight)]
+                idx += 1
+                return
+            
+            elif root.right is None or root.right.value is None:
+                if root.parent is not None:
+                    adj_list[(idx, root.value)] = [(root.left.value, root.left.weight), (root.parent.value, root.weight)]
+                
+                
+            elif root.left is None or root.left.value is None:
+                if root.parent is not None:
+                    adj_list[(idx, root.value)] = [(root.right.value, root.right.weight), (root.parent.value, root.weight)]
+                
+                
+            else:
+                if root.parent is not None:
+                    adj_list[(idx, root.value)] = [(root.left.value, root.left.weight),
+                                            (root.right.value, root.right.weight), (root.parent.value, root.weight)]
+                    
+                    
+                else:
+                    adj_list[(idx, root.value)] = [(root.left.value, root.left.weight),
+                                            (root.right.value, root.right.weight)]
+                    
+            # Recursion
+            idx += 1
+            create_adjacency_list(root=root.left, adj_list=adj_list, idx=idx)
+            create_adjacency_list(root=root.right, adj_list=adj_list, idx=idx)
+
+        else:
+            new_root = create_tree(root, weight_tuple)
+            create_adjacency_list(root=new_root)
+            
+        return adj_list
+            
+    else:
+        if isinstance(root, TreeNode):
+            # Base Cases
+            if root.left is None and root.right is None:
+                if root.value is not None and root.parent is not None:
+                    adj_list[root.key] = [(root.parent.key, root.weight)]
+                return
+            
+            elif root.right is None or root.right.value is None:
+                if root.parent is not None:
+                    adj_list[root.key] = [(root.left.key, root.left.weight), (root.parent.key, root.weight)]
+                
+                
+            elif root.left is None or root.left.value is None:
+                if root.parent is not None:
+                    adj_list[root.key] = [(root.right.key, root.right.weight), (root.parent.key, root.weight)]
+                
+                
+            else:
+                if root.parent is not None:
+                    adj_list[root.key] = [(root.left.key, root.left.weight),
+                                            (root.right.key, root.right.weight), (root.parent.key, root.weight)]
+                    
+                    
+                else:
+                    adj_list[root.key] = [(root.left.key, root.left.weight),
+                                            (root.right.key, root.right.weight)]
+                    
+            # Recursion
+            create_adjacency_list(root=root.left, adj_list=adj_list, replace_keys=False)
+            create_adjacency_list(root=root.right, adj_list=adj_list, replace_keys=False)
+
+        else:
+            new_root = create_tree(root, weight_tuple)
+            create_adjacency_list(root=new_root, replace_keys=False)
+        
+
+        return adj_list 
 
 
 #* === GRAPH DATA-STRUCTURE === *#
@@ -273,10 +445,6 @@ class BFS:
             if source is None:
                 source = self.struct
 
-                # Base case
-            if source is None:
-                return
-
             # creating an empty queue for level order traversal
             queue = []
             container = []
@@ -348,17 +516,17 @@ class DFS:
     def traverse(self, verbose=False):
         if self.type == 'tree':
             assert isinstance(self.struct, TreeNode)
-            
+
             if self.struct is None:
                 return
-            
+
             container = self.__preorder(self.struct, [])
-            
+
             if verbose:
                 print(f"The Order of Traversal is: {container}")
-            
+
             return container
-                
+
         if self.type == 'graph':
             assert isinstance(self.struct, Graph)
 
@@ -379,19 +547,51 @@ class DFS:
                 print(f"Order of Traversal is: {container}")
 
             return container
-        
+
     def __preorder(self, tree_root: TreeNode, container: list):
         if tree_root:
             if tree_root.value is not None:
                 container.append(tree_root.value)
             self.__preorder(tree_root.left, container)
             self.__preorder(tree_root.right, container)
-        
+
         return container
+
+    def find_shortest_path(self, source, target, cost=0):
+        if self.type == 'tree':
+            assert isinstance(source, TreeNode) and isinstance(target, TreeNode)
+            
+            tree = create_adjacency_list(root=source, replace_keys=False)
+            stack = []
+            discovered = [False for _ in range(len(tree))]
+            distance = [0 for _ in range(len(tree))]
+            
+            if source.key == target.key:
+                return distance            
+            
+            source = (source.key, 0)
+            stack.append(source)
+            
+            while len(stack) > 0:
+                val = stack.pop()
+                if not discovered[val[0]]:
+                    discovered[val[0]] = True
+                    distance[val[0]] += val[1]
+                    if val[0] == target.key:
+                        return distance
+                    
+                    for w in tree[val[0]]:
+                        if not discovered[w[0]]:
+                            stack.append(w)    
+                
+            return distance
+
+        if self.type == 'graph':
+            assert isinstance(self.struct, Graph)
 
 
 #* === INFORMED SEARCH ALGORITHM === *#
 #  -----------------------------------  #
 class AStar:
     def __init__(self, heuristic=None):
-        pass 
+        pass
