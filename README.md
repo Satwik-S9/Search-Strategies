@@ -16,6 +16,8 @@
 
 <br/>
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Satwik-S9/Search-Strategies/master)
+
 **Description:** <br/>
 In this script I have created all the basic search strategies employed in Artificial Intelligence.
 These include but are not limited to the following:
