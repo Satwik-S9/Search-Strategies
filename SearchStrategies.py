@@ -13,7 +13,7 @@ To be made into a package later.
 
 
 # * Global Version container
-__version__ = "0.49"
+__version__ = "0.50"
 
 
 #* === TREE DATA-STRUCTURE === *#
@@ -75,14 +75,20 @@ def size(node):
     return 1 + size(node.left) + size(node.right)
 
 
-def find(root, target):
+def find(root, target_idx, return_values=False):
     if root is not None:
-        if root.value == target:
-            return root
-        elif root.value < target:
-            find(root.right, target)
-        else:
-            find(root.left, target)
+        if root.key == target_idx:
+            if return_values:
+                return root.value
+            else:
+                return root
+        res1 = find(root.right, target_idx, return_values=return_values)
+        res2 = find(root.left, target_idx, return_values=return_values)
+        
+        if res2 is not None:
+            return res2
+        else: 
+            return res1 
         
 
 def create_prelim_tree(tree_tuple: tuple, weight_tuple: tuple = None):
@@ -438,7 +444,14 @@ class BFS:
 
                 visited[current] = True
 
-            return distance[target], parent
+            # Appending Path based on parents array    
+            path = []
+            temp = target
+            while temp is not None:
+                path.insert(0, temp)
+                temp = parent[temp]
+            
+            return path, distance[target] 
 
         if self.type == 'tree':
             assert isinstance(self.struct, TreeNode)
@@ -491,7 +504,7 @@ class BFS:
                 if parent:
                     parent[node] = current
 
-    def __pick_next_node(distance, visited):
+    def __pick_next_node(self, distance, visited):
         """Pick the next univisited node at the smallest distance"""
         min_distance = float('inf')
         min_node = None
@@ -555,7 +568,7 @@ class DFS:
             self.__preorder(tree_root.left, container)
             self.__preorder(tree_root.right, container)
 
-        return container
+        return container 
 
     def find_shortest_path(self, source, target, cost=0):
         if self.type == 'tree':
@@ -569,8 +582,8 @@ class DFS:
             if source.key == target.key:
                 return distance            
             
-            source = (source.key, 0)
-            stack.append(source)
+            src = (source.key, 0)
+            stack.append(src)
             
             while len(stack) > 0:
                 val = stack.pop()
@@ -578,16 +591,82 @@ class DFS:
                     discovered[val[0]] = True
                     distance[val[0]] += val[1]
                     if val[0] == target.key:
-                        return distance
+                        path = []
+                        cost = 0
+                        for idx, wt in enumerate(distance):
+                            if wt != 0:
+                                path.append(find(source, idx, return_values=True))
+                                cost += wt
+                        
+                        path.insert(0, find(source, src[0], return_values=True))    
+                        return path, cost
                     
                     for w in tree[val[0]]:
                         if not discovered[w[0]]:
-                            stack.append(w)    
-                
-            return distance
+                            stack.append(w)                
 
         if self.type == 'graph':
             assert isinstance(self.struct, Graph)
+            
+            discovered = [False for _ in range(len(self.struct.data))]
+            parent = [None for _ in range(len(self.struct.data))]
+            distance = [float('inf') for _ in range(len(self.struct.data))]
+            stack = []
+
+            distance[source] = 0
+            stack.append(source)
+
+            while len(stack) > 0 and not discovered[target]:
+                current = stack.pop()
+                discovered[current] = True
+
+                # update distances
+                self.__update_distances(self.struct, current, distance, parent)
+
+                # find the first undiscovered node with the minimum distance
+                next_node = self.__pick_next_node(distance, discovered)
+                if next_node:
+                    stack.append(next_node)
+
+                discovered[current] = True
+            
+            # Appending Path based on parents array    
+            path = []
+            temp = target
+            while temp is not None:
+                path.insert(0, temp)
+                temp = parent[temp]
+            
+            return path, distance[target]    
+        
+    def __update_distances(self, graph, current, distance, parent=None):
+        """Update the distances of the current node's neighbors"""
+        neighbors = graph.data[current]
+        weights = graph.weights[current]
+        for i, node in enumerate(neighbors):
+            weight = weights[i]
+            if distance[current] + weight < distance[node]:
+                distance[node] = distance[current] + weight
+                if parent:
+                    parent[node] = current
+
+    def __pick_next_node(self, distance, visited):
+        """Pick the next univisited node at the smallest distance"""
+        min_distance = float('inf')
+        min_node = None
+        for node in range(len(distance)):
+            if not visited[node] and distance[node] < min_distance:
+                min_node = node
+                min_distance = distance[node]
+        return min_node
+                                  
+
+def djikstra():
+    pass
+
+
+def belman_ford():
+    pass
 
 
 #* === INFORMED SEARCH ALGORITHM === *#
