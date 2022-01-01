@@ -8,11 +8,11 @@
 > - Twitter : [@Satwik_9](https://twitter.com/Satwik_9)
 > - Github : <https://github.com/Satwik-S9>
 
-#### **<u>Release</u>:** `alpha`
+#### **<u>Release</u>:** `alpha-stable`
 
 <br/>
 
-#### **<u>Version</u>:** `0.49`
+#### **<u>Version</u>:** `0.50`
 
 <br/>
 
@@ -20,11 +20,21 @@
 In this script I have created all the basic search strategies employed in Artificial Intelligence.
 These include but are not limited to the following:
 
+1. Uninformed Search Strategies:   
+   1. BFS
+   2. DFS
+   3. Uniform Cost Search
+2. Informed Search Strategies:
+   1. A Star Search 
+3. Game Search Strategies: 
+   1. Alpha-Beta Search
+4. Backtracking Search
+
 ## 1. Table Of Contents
 
 - [Search Strategies](#search-strategies)
-      - [**<u>Release</u>:** `alpha`](#ureleaseu-alpha)
-      - [**<u>Version</u>:** `0.49`](#uversionu-049)
+      - [**<u>Release</u>:** `alpha-stable`](#ureleaseu-alpha-stable)
+      - [**<u>Version</u>:** `0.50`](#uversionu-050)
   - [1. Table Of Contents](#1-table-of-contents)
   - [2. Introduction](#2-introduction)
     - [2.1 Uninformed Search](#21-uninformed-search)
@@ -32,13 +42,15 @@ These include but are not limited to the following:
     - [2.3 Game Search](#23-game-search)
   - [3. Installation and Usage](#3-installation-and-usage)
   - [4. ChangeLog](#4-changelog)
-    - [4.1 Version 0.49](#41-version-049)
-    - [4.2 Version 0.45](#42-version-045)
-    - [4.3 Version 0.40](#43-version-040)
+    - [4.1 Version 0.50](#41-version-050)
+    - [4.2 Version 0.49](#42-version-049)
+    - [4.3 Version 0.45](#43-version-045)
+    - [4.4 Version 0.40](#44-version-040)
     - [4.4 Version 0.38](#44-version-038)
 - [5. Documentation](#5-documentation)
   - [5.1 Tree](#51-tree)
     - [5.1.1 Binary Tree](#511-binary-tree)
+- [6. Further Plans](#6-further-plans)
 
 ## 2. Introduction
 
@@ -73,20 +85,27 @@ This should print the current [version](#uversionu-040) of the module. If not it
 
 ## 4. ChangeLog
 
-### 4.1 Version 0.49
+### 4.1 Version 0.50
+
+- `BFS` and `DFS` classes are now fully available and all the methods required are now completed. Some handy functions have been added too.
+- The `find` function is added to find a value in a Binary Tree.
+- Added `create_adjacency_list` for trees to convert them into graphs for interoperability.
+- All shortest path methods are now available and return `path, cost` as there return parameters and across the board a little homogeniety has been introduced. 
+
+### 4.2 Version 0.49
 
 - Added `create_adjacency_list` for trees to convert them into graphs for interoperability.
 - Creating a tree can now initialize the keys and the parents (uses `initialize_parents` and `initialize_keys`)
 - The `DFS` class now supports the shortest path calculation for trees.
 
-### 4.2 Version 0.45
+### 4.3 Version 0.45
 
 - Changed the verbose functionality across `BFS` class to introduce more homogeniety between outputs.
 - `DFS` Class has been added to the module with the `traverse()` method for both _`trees`_ and _`graphs`_.
 - NOTE: The traverse method for tree currently does preorder traversal.
 - Fixed some bugs in the implementation of `BFS`.
 
-### 4.3 Version 0.40
+### 4.4 Version 0.40
 
 - The `BFS` Class has been added into the module along with relevant supporting data-structures such as `Graph` and `Tree`. This class supports methods for traversal of the data structure and to find the shortest path given a source and a target.
 
@@ -119,3 +138,9 @@ root = ss.create_tree(tree_tuple)
 ```
 
 **NOTE:** Currently Working on Documentation. Please refer to the `test.ipynb` for an onhande demo.
+
+# 6. Further Plans
+
+1. Package the file into a python Module.
+2. Add BSTs to the project.
+3. Add Informed Search Strategies such as `Astar` search.
