@@ -375,9 +375,10 @@ class BFS:
                         discovered[node] = True
                         queue.append(node)
             if verbose:
-                print(
-                    f"Order of Traverseal: {queue}\nDistance: {distance}\nParents: {parent}")
+                print(f"Order of Traverseal: {queue}\nDistance: {distance}\nParents: {parent}")
+                
                 return queue, distance, parent
+            
             else:
                 return queue, distance, parent
 
